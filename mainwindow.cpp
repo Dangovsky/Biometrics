@@ -35,5 +35,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent* e){
 void MainWindow::on_registrButton_clicked()
 {
     model.addSample(timeKeyDown, timeKeyUp);
-    timeKeyDown = timeKeyUp = {};
+    timeKeyDown = {};
+    timeKeyUp = {};
+}
+
+void MainWindow::on_getModelButton_clicked()
+{
+    model.GetModel();
 }

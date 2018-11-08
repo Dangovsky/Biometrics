@@ -28,6 +28,8 @@ protected:
 private slots:
     void on_registrButton_clicked();
 
+    void on_getModelButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
