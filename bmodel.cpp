@@ -1,6 +1,6 @@
 #include "bmodel.h"
 
-BModel::BModel() : samples(), model()
+BModel::BModel() : samples(), model(), min(), max()
 {}
 
 BModel::~BModel()
@@ -41,9 +41,7 @@ int BModel::CalculateModel(){
     if (samples.size() == 0) return -1;
     if ((size = samples.at(0).size()) == 0) return -1;
 
-    m = vector<float>(samples.at(0).size(), 0);
-    sigma = vector<float>(samples.at(0).size(), 0);
-
+    vector<float> m = vector<float>(samples.at(0).size(), 0);
     for (int i = 0; i < samples.at(0).size(); i++){
         for (int j = 0; j < samples.size(); j++){
             if (size != samples.at(j).size() || samples.at(j).size() == 0) return -1;
@@ -52,14 +50,45 @@ int BModel::CalculateModel(){
         m.at(i) /= samples.size();
     }
 
+    vector<float> sigma = vector<float>(samples.at(0).size(), 0);
     for (int i = 0; i < samples.at(0).size(); i++){
         for (int j = 0; j < samples.size(); j++){
             sigma.at(i) += pow(samples.at(j).at(i) - m.at(i), 2);
         }
         sigma.at(i) /= samples.size() - 1;
-    }
-
-    for (int i = 0; i < sigma.size(); i++){
         sigma.at(i) = sqrt(sigma.at(i));
     }
+
+    min = vector<double>(m.size(), 0);
+    max = vector<double>(m.size(), 0);
+    for (int i = 0; i < min.size(); i++){
+        min[i] = m[i] - 1.38 * sigma[i];
+        max[i] = m[i] + 1.38 * sigma[i];
+    }
+
+    vector<int> hemming = vector<int>(samples.size(), 0);;
+    int tmp;
+    for (int i = 0; i < samples.size(); i++){
+        tmp = 0;
+        for (int j = 0; j < samples.at(0).size(); j++){
+            if (samples.at(i).at(j) > max.at(j) || samples.at(i).at(j) < min.at(j))
+                tmp++;
+        }
+        hemming.at(i) = tmp;
+    }
+
+    double hemming_m = 0;
+    for (auto& n : hemming)
+        hemming_m += n;
+    hemming_m /= hemming.size();
+
+    double hemming_sigma = 0;
+    for (auto& n : hemming)
+        hemming_sigma += pow(n - hemming_m, 2);
+    hemming_sigma /= hemming.size() - 1;
+    hemming_sigma  = sqrt(hemming_sigma);
+
+    threshold = hemming_m + 1.38 * hemming_sigma;
+
+    threshold = hemming_m + 1.38 * hemming_sigma;
 }
