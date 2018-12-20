@@ -30,6 +30,8 @@ private slots:
 
     void on_getModelButton_clicked();
 
+    void on_autorisationButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

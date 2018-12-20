@@ -34,12 +34,26 @@ void MainWindow::keyReleaseEvent(QKeyEvent* e){
 
 void MainWindow::on_registrButton_clicked()
 {
-    model.addSample(timeKeyDown, timeKeyUp);
+    model.AddSample(timeKeyDown, timeKeyUp);
     timeKeyDown = {};
     timeKeyUp = {};
 }
 
 void MainWindow::on_getModelButton_clicked()
 {
-    model.GetModel();
+    model.SaveModel(ui->nameText->toPlainText());
+}
+
+void MainWindow::on_autorisationButton_clicked()
+{
+    model.AddSample(timeKeyDown, timeKeyUp);
+    timeKeyDown = {};
+    timeKeyUp = {};
+    model.LoadModel(ui->nameText->toPlainText());
+    if (model.Autorisation()){
+        ui->passwText->setText("Access granted");
+    }
+    else {
+        ui->passwText->setText("Access denied");
+    }
 }

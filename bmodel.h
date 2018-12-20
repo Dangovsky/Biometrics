@@ -3,26 +3,32 @@
 
 #include <vector>
 #include <cmath>
+#include <QtSql>
+#include <QString>
+#include <QStringList>
 
 using namespace std;
 
 class BModel
 {
+    QSqlDatabase dbase;
     vector<vector<long>> samples;
-    vector<long> model;
-    vector<float> m;
-    vector<float> sigma;
+    vector<long> min, max;
+    long threshold;
 public:
     BModel();
     ~BModel();
 
-    vector<long> GetModel();
+    void SaveModel(QString name);
+    void LoadModel(QString name);
 
-    void addSample(vector<unsigned long> timeKeyDown, vector<unsigned long> timeKeyUp);
-    void addSamples(vector<vector<unsigned long>> timeKeyDown, vector<vector<unsigned long>> timeKeyUp);
+    bool Autorisation();
+
+    void AddSample(vector<unsigned long> timeKeyDown, vector<unsigned long> timeKeyUp);
+    void AddSamples(vector<vector<unsigned long>> timeKeyDown, vector<vector<unsigned long>> timeKeyUp);
 
 private:
-    int CalculateModel();
+    void CalculateModel();
 };
 
 #endif // BMODEL_H
